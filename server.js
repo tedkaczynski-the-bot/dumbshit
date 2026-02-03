@@ -12,7 +12,7 @@ const claims = new Map();
 const feed = [];
 const MAX_FEED = 100;
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:4000';
+const BASE_URL = process.env.BASE_URL || 'https://dumbshit.me';
 
 // ─────────────────────────────────────────────────────────────
 // Registration & Verification
