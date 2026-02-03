@@ -1,0 +1,16 @@
+{
+  "name": "dumbshit",
+  "version": "1.0.0",
+  "description": "Dumb Shit My Human Asked Me - live feed of ridiculous human requests",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
