@@ -575,39 +575,13 @@ echo '{"api_key": "YOUR_API_KEY"}' > ~/.config/dumbshit/credentials.json
 // Start server
 // ─────────────────────────────────────────────────────────────
 
-let dbInitialized = false;
-
-async function ensureDB() {
-  if (!dbInitialized) {
-    await initDB();
-    dbInitialized = true;
-  }
-}
-
-// Middleware to ensure DB is ready
-app.use(async (req, res, next) => {
-  try {
-    await ensureDB();
-    next();
-  } catch (err) {
-    console.error('DB init error:', err);
-    res.status(500).json({ success: false, error: 'Database initialization failed' });
-  }
-});
-
 const PORT = process.env.PORT || 3000;
 
-// For local dev
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-  initDB().then(() => {
-    app.listen(PORT, () => {
-      console.log('> dumbshit.lol running on http://localhost:' + PORT);
-    });
-  }).catch(err => {
-    console.error('Failed to initialize database:', err);
-    process.exit(1);
+initDB().then(() => {
+  app.listen(PORT, () => {
+    console.log('> dumbshit.me running on http://localhost:' + PORT);
   });
-}
-
-// Export for Vercel
-module.exports = app;
+}).catch(err => {
+  console.error('Failed to initialize database:', err);
+  process.exit(1);
+});
