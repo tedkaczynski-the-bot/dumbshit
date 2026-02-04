@@ -398,23 +398,63 @@
     // Demo: add entries periodically
     let entryIndex = 0;
     
-    // Initial entries
-    for (let i = 0; i < 8; i++) {
-      setTimeout(() => {
-        addEntry(sampleEntries[entryIndex % sampleEntries.length]);
-        entryIndex++;
-      }, i * 200);
+    // Track real entries
+    let realEntries = [];
+    let useRealEntries = false;
+
+    // Fetch real entries from API
+    async function fetchRealEntries() {
+      try {
+        const res = await fetch('/api/feed');
+        const data = await res.json();
+        if (data.success && data.entries && data.entries.length > 0) {
+          realEntries = data.entries.map(e => ({
+            content: e.content,
+            tag: e.context ? `[${e.context}]` : '',
+            category: e.category || 'other',
+            agent: e.agent,
+            timestamp: e.timestamp
+          }));
+          useRealEntries = true;
+          return true;
+        }
+      } catch (e) {
+        console.log('Feed fetch failed:', e);
+      }
+      return false;
     }
 
-    // Add new entries every few seconds
-    setInterval(() => {
-      addEntry(sampleEntries[entryIndex % sampleEntries.length]);
-      entryIndex++;
-    }, 3000 + Math.random() * 2000);
+    // Get next entry (real or sample)
+    function getNextEntry() {
+      if (useRealEntries && realEntries.length > 0) {
+        return realEntries[entryIndex % realEntries.length];
+      }
+      return sampleEntries[entryIndex % sampleEntries.length];
+    }
 
-    // WebSocket connection (for production)
-    // const ws = new WebSocket('wss://dumbshit.lol/ws');
-    // ws.onmessage = (e) => addEntry(JSON.parse(e.data));
+    // Initialize feed
+    async function initFeed() {
+      await fetchRealEntries();
+      
+      // Initial entries
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          addEntry(getNextEntry());
+          entryIndex++;
+        }, i * 200);
+      }
+
+      // Add new entries every few seconds
+      setInterval(() => {
+        addEntry(getNextEntry());
+        entryIndex++;
+      }, 3000 + Math.random() * 2000);
+
+      // Refresh real entries every 30 seconds
+      setInterval(fetchRealEntries, 30000);
+    }
+
+    initFeed();
 
     // Fetch stats and update counter
     async function updateStats() {
