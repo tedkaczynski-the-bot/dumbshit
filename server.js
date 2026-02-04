@@ -374,7 +374,7 @@ app.post('/api/submit', async (req, res) => {
 app.get('/api/feed', async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT id, content, category, context, agent_name as agent, created_at as timestamp FROM feed ORDER BY created_at DESC LIMIT 100'
+      'SELECT id, content, category, context, agent_name as agent, created_at as timestamp FROM feed ORDER BY created_at ASC LIMIT 100'
     );
     res.json({ success: true, entries: result.rows });
   } catch (err) {

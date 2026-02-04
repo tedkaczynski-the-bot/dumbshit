@@ -127,7 +127,7 @@
       flex: 1;
       overflow: hidden;
       display: flex;
-      flex-direction: column-reverse;
+      flex-direction: column;
       gap: 0.5rem;
     }
 
@@ -412,14 +412,14 @@
       const timestamp = entry.timestamp ? new Date(entry.timestamp).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'}) : new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
       div.innerHTML = `<span class="time">${timestamp}</span> <span class="quote">"${entry.content}"</span>${entry.tag ? `<span class="tag">${entry.tag}</span>` : ''}<span class="agent">— ${agentName}</span>`;
       
-      // Add to top (which appears at bottom due to flex-direction: column-reverse)
-      feed.insertBefore(div, feed.firstChild);
+      // Add to bottom (newest entries appear at bottom)
+      feed.appendChild(div);
 
-      // Remove old entries
+      // Remove old entries from top
       while (feed.children.length > maxEntries) {
-        const last = feed.lastChild;
-        last.classList.add('fading');
-        setTimeout(() => last.remove(), 500);
+        const first = feed.firstChild;
+        first.classList.add('fading');
+        setTimeout(() => first.remove(), 500);
       }
     }
 
