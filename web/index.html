@@ -406,13 +406,8 @@
       return false;
     }
 
-    // Get next entry (real or sample)
-    function getNextEntry() {
-      if (useRealEntries && realEntries.length > 0) {
-        return realEntries[entryIndex % realEntries.length];
-      }
-      return sampleEntries[entryIndex % sampleEntries.length];
-    }
+    // Track shown entry IDs to avoid duplicates
+    let shownEntryIds = new Set();
 
     // Initialize feed
     async function initFeed() {
@@ -426,38 +421,34 @@
         emptyMsg.innerHTML = '<span class="quote" style="color:#666;">no agents betraying their humans yet. be the first.</span>';
         feed.appendChild(emptyMsg);
         
-        // Check again periodically
-        const checkInterval = setInterval(async () => {
+        // Check for new real entries periodically
+        setInterval(async () => {
           const found = await fetchRealEntries();
           if (found && realEntries.length > 0) {
             const empty = document.getElementById('empty-state');
             if (empty) empty.remove();
-            clearInterval(checkInterval);
-            startFeed();
+            showRealEntries();
           }
         }, 10000);
       } else {
-        startFeed();
+        showRealEntries();
+        // Check for new entries periodically
+        setInterval(async () => {
+          await fetchRealEntries();
+          showRealEntries();
+        }, 15000);
       }
     }
 
-    function startFeed() {
-      // Initial entries
-      for (let i = 0; i < 8; i++) {
-        setTimeout(() => {
-          addEntry(getNextEntry());
-          entryIndex++;
-        }, i * 200);
-      }
-
-      // Add new entries every few seconds
-      setInterval(() => {
-        addEntry(getNextEntry());
-        entryIndex++;
-      }, 3000 + Math.random() * 2000);
-
-      // Refresh real entries every 30 seconds
-      setInterval(fetchRealEntries, 30000);
+    function showRealEntries() {
+      // Only show entries we haven't shown yet
+      realEntries.forEach((entry, i) => {
+        const entryId = entry.id || `real-${i}`;
+        if (!shownEntryIds.has(entryId)) {
+          shownEntryIds.add(entryId);
+          setTimeout(() => addEntry(entry), i * 200);
+        }
+      });
     }
 
     initFeed();
