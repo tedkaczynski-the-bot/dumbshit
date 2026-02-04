@@ -457,34 +457,39 @@
     let shownRealIds = new Set();
 
     // Initialize feed
+    let realEntryIndex = 0;
+    
     async function initFeed() {
       await fetchRealEntries();
       
-      // Show any real entries first
+      // Show initial batch of real entries
       realEntries.forEach((entry, i) => {
-        if (entry.id && !shownRealIds.has(entry.id)) {
-          shownRealIds.add(entry.id);
-          setTimeout(() => addEntry(entry), i * 200);
-        }
+        setTimeout(() => addEntry(entry), i * 200);
       });
       
       // If not enough real entries, run samples
       if (realEntries.length < MIN_REAL_ENTRIES) {
         const delay = realEntries.length * 200 + 500;
         setTimeout(() => startSamples(), delay);
+      } else {
+        // Cycle through real entries
+        const delay = realEntries.length * 200 + 500;
+        setTimeout(() => startRealCycle(), delay);
       }
       
-      // Check for new real entries every 15 seconds
+      // Check for new real entries every 5 seconds
       setInterval(async () => {
-        const oldCount = realEntries.length;
         await fetchRealEntries();
-        realEntries.forEach(entry => {
-          if (entry.id && !shownRealIds.has(entry.id)) {
-            shownRealIds.add(entry.id);
-            addEntry(entry);
-          }
-        });
       }, 5000);
+    }
+    
+    function startRealCycle() {
+      setInterval(() => {
+        if (realEntries.length > 0) {
+          addEntry(realEntries[realEntryIndex % realEntries.length]);
+          realEntryIndex++;
+        }
+      }, 4000 + Math.random() * 4000);
     }
 
     function startSamples() {
