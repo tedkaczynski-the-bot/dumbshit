@@ -406,66 +406,52 @@
       return false;
     }
 
-    // Track shown entry IDs
+    // Minimum real entries before we stop showing samples
+    const MIN_REAL_ENTRIES = 10;
     let shownRealIds = new Set();
-    let samplesRunning = false;
 
     // Initialize feed
     async function initFeed() {
       await fetchRealEntries();
       
-      if (realEntries.length > 0) {
-        // REAL ENTRIES EXIST - show only those
-        showRealEntries();
-      } else {
-        // NO REAL ENTRIES - show samples
-        startSamples();
-      }
-      
-      // Check for new real entries every 15 seconds
-      setInterval(async () => {
-        await fetchRealEntries();
-        if (realEntries.length > 0) {
-          showRealEntries();
-        }
-      }, 15000);
-    }
-
-    function showRealEntries() {
-      // Stop samples if running
-      samplesRunning = false;
-      
-      // Clear feed and show real entries
-      feed.innerHTML = '';
-      shownRealIds.clear();
-      
+      // Show any real entries first
       realEntries.forEach((entry, i) => {
-        if (entry.id) {
+        if (entry.id && !shownRealIds.has(entry.id)) {
           shownRealIds.add(entry.id);
           setTimeout(() => addEntry(entry), i * 200);
         }
       });
+      
+      // If not enough real entries, run samples
+      if (realEntries.length < MIN_REAL_ENTRIES) {
+        const delay = realEntries.length * 200 + 500;
+        setTimeout(() => startSamples(), delay);
+      }
+      
+      // Check for new real entries every 15 seconds
+      setInterval(async () => {
+        const oldCount = realEntries.length;
+        await fetchRealEntries();
+        realEntries.forEach(entry => {
+          if (entry.id && !shownRealIds.has(entry.id)) {
+            shownRealIds.add(entry.id);
+            addEntry(entry);
+          }
+        });
+      }, 15000);
     }
 
     function startSamples() {
-      if (samplesRunning) return;
-      samplesRunning = true;
-      
       // Initial batch
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 6; i++) {
         setTimeout(() => {
-          if (!samplesRunning) return;
           addEntry(sampleEntries[entryIndex % sampleEntries.length]);
           entryIndex++;
-        }, i * 200);
+        }, i * 250);
       }
       
-      // Keep adding
-      const interval = setInterval(() => {
-        if (!samplesRunning) {
-          clearInterval(interval);
-          return;
-        }
+      // Keep adding samples
+      setInterval(() => {
         addEntry(sampleEntries[entryIndex % sampleEntries.length]);
         entryIndex++;
       }, 3000 + Math.random() * 2000);
