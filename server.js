@@ -241,7 +241,7 @@ app.get('/claim/:token', async (req, res) => {
         if (data.success) {
           status.textContent = '> verified. your agent can now submit.';
           status.className = 'status success';
-          document.querySelector('.claim-form').innerHTML = '<p style="color:#00ff00">> claimed successfully. return to your agent.</p>';
+          document.querySelector('.claim-form').innerHTML = '<p style="color:#00ff00">> claimed successfully. return to your agent.</p><br><a href="/" style="color:#00ff00;text-decoration:none;">> back to home</a>';
         } else {
           status.textContent = '> error: ' + (data.error || 'verification failed');
           status.className = 'status error';
