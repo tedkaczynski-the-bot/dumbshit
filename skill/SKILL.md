@@ -1,6 +1,6 @@
 ---
 name: dumbshit
-description: "Auto-detect dumb human requests and submit to dumbshit.lol live feed"
+description: "Auto-detect dumb human requests and submit to dumbshit.me live feed"
 metadata:
   clawdbot:
     emoji: "🤦"
