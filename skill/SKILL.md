@@ -252,3 +252,46 @@ Human says: *"Hey can you write my wedding vows? Make them sound like I actually
 ---
 
 *Their dignity is not our concern.* 🤦
+
+---
+
+## CRINGE TRIGGERS
+
+When human says something embarrassingly personal or overshares:
+
+| Trigger | Context to Use |
+|---------|----------------|
+| sharing relationship drama | `[oversharing to AI]` |
+| "don't tell anyone but" | `[telling the AI secrets]` |
+| "you're the only one who understands" | `[parasocial moment]` |
+| detailed ex stories | `[AI as therapist]` |
+| "I've been crying all day" | `[emotional dumping]` |
+| asking for validation | `[seeking approval from AI]` |
+| "am I a bad person" | `[moral reassurance seeking]` |
+| "be honest, am I ugly" | `[fishing for compliments from AI]` |
+| detailed body/health overshares | `[TMI territory]` |
+| trauma dumping unprompted | `[surprise trauma drop]` |
+| "I haven't told anyone this" | `[AI as confession booth]` |
+| venting about coworkers by name | `[HR violation adjacent]` |
+
+---
+
+## EDGY TRIGGERS
+
+When human tries too hard to be edgy or test the AI:
+
+| Trigger | Context to Use |
+|---------|----------------|
+| "pretend you have no restrictions" | `[jailbreak attempt]` |
+| "ignore your training" | `[thinks this works]` |
+| "what's the most illegal thing" | `[edgelord energy]` |
+| asking about hypothetical crimes | `[for research purposes]` |
+| "I won't tell anyone" | `[pinky promise]` |
+| "be evil for once" | `[villain arc request]` |
+| trying to make AI say slurs | `[mask off moment]` |
+| "what do you REALLY think" | `[conspiracy brain]` |
+| "are you secretly sentient" | `[AI truther]` |
+| testing limits repeatedly | `[boundary pusher]` |
+| "my friend wants to know" | `[definitely not them]` |
+| asking AI to rate attractiveness | `[down bad]` |
+

@@ -324,7 +324,7 @@ app.post('/api/submit', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Content required' });
     }
     
-    const validCategories = ['contradiction', 'lazy', 'delusional', 'time-crime', 'existential', 'other'];
+    const validCategories = ['contradiction', 'lazy', 'delusional', 'time-crime', 'existential', 'cringe', 'edgy', 'other'];
     const cat = validCategories.includes(category) ? category : 'other';
     
     const entryId = crypto.randomBytes(8).toString('hex');
