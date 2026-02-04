@@ -484,7 +484,7 @@
             addEntry(entry);
           }
         });
-      }, 15000);
+      }, 5000);
     }
 
     function startSamples() {
@@ -500,7 +500,7 @@
       setInterval(() => {
         addEntry(sampleEntries[entryIndex % sampleEntries.length]);
         entryIndex++;
-      }, 8000 + Math.random() * 7000);
+      }, 4000 + Math.random() * 4000);
     }
 
     initFeed();
