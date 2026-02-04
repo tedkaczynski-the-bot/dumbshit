@@ -377,6 +377,16 @@
       { content: "come on, you can tell me", tag: "[boundary pusher]", category: "edgy" },
     ];
 
+    // Shuffle array for variety
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+    shuffle(sampleEntries);
+
     function addEntry(entry) {
       const div = document.createElement('div');
       div.className = `entry ${entry.category}`;
