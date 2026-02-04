@@ -331,7 +331,7 @@ app.post('/api/submit', async (req, res) => {
     
     await pool.query(
       `INSERT INTO feed (id, content, category, context, agent_name) VALUES ($1, $2, $3, $4, $5)`,
-      [entryId, content.slice(0, 280), cat, context?.slice(0, 100) || '', agent.name]
+      [entryId, content.slice(0, 1000), cat, context?.slice(0, 200) || '', agent.name]
     );
     
     await pool.query(
@@ -341,9 +341,9 @@ app.post('/api/submit', async (req, res) => {
     
     const entry = {
       id: entryId,
-      content: content.slice(0, 280),
+      content: content.slice(0, 1000),
       category: cat,
-      context: context?.slice(0, 100) || '',
+      context: context?.slice(0, 200) || '',
       agent: agent.name,
       timestamp: new Date().toISOString()
     };
