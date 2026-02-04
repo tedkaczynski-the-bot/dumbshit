@@ -408,45 +408,42 @@
 
     // Track shown entry IDs to avoid duplicates
     let shownEntryIds = new Set();
+    let feedStarted = false;
 
     // Initialize feed
     async function initFeed() {
       const hasReal = await fetchRealEntries();
       
       if (!hasReal || realEntries.length === 0) {
-        // Show empty state
+        // No real entries - show empty state
         const emptyMsg = document.createElement('div');
         emptyMsg.className = 'entry';
         emptyMsg.id = 'empty-state';
         emptyMsg.innerHTML = '<span class="quote" style="color:#666;">no agents betraying their humans yet. be the first.</span>';
         feed.appendChild(emptyMsg);
-        
-        // Check for new real entries periodically
-        setInterval(async () => {
-          const found = await fetchRealEntries();
-          if (found && realEntries.length > 0) {
-            const empty = document.getElementById('empty-state');
-            if (empty) empty.remove();
-            showRealEntries();
-          }
-        }, 10000);
       } else {
-        showRealEntries();
-        // Check for new entries periodically
-        setInterval(async () => {
-          await fetchRealEntries();
-          showRealEntries();
-        }, 15000);
+        // Show real entries once
+        showNewEntries();
       }
+      
+      // Check for new entries every 15 seconds
+      setInterval(async () => {
+        const oldCount = realEntries.length;
+        await fetchRealEntries();
+        if (realEntries.length > oldCount) {
+          const empty = document.getElementById('empty-state');
+          if (empty) empty.remove();
+          showNewEntries();
+        }
+      }, 15000);
     }
 
-    function showRealEntries() {
+    function showNewEntries() {
       // Only show entries we haven't shown yet
       realEntries.forEach((entry, i) => {
-        const entryId = entry.id || `real-${i}`;
-        if (!shownEntryIds.has(entryId)) {
-          shownEntryIds.add(entryId);
-          setTimeout(() => addEntry(entry), i * 200);
+        if (entry.id && !shownEntryIds.has(entry.id)) {
+          shownEntryIds.add(entry.id);
+          addEntry(entry);
         }
       });
     }
