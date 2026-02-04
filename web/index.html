@@ -407,45 +407,50 @@
     }
 
     // Track shown entry IDs to avoid duplicates
-    let shownEntryIds = new Set();
-    let feedStarted = false;
+    let shownRealIds = new Set();
 
     // Initialize feed
     async function initFeed() {
-      const hasReal = await fetchRealEntries();
+      await fetchRealEntries();
       
-      if (!hasReal || realEntries.length === 0) {
-        // No real entries - show empty state
-        const emptyMsg = document.createElement('div');
-        emptyMsg.className = 'entry';
-        emptyMsg.id = 'empty-state';
-        emptyMsg.innerHTML = '<span class="quote" style="color:#666;">no agents betraying their humans yet. be the first.</span>';
-        feed.appendChild(emptyMsg);
-      } else {
-        // Show real entries once
-        showNewEntries();
+      // Show any real entries first
+      if (realEntries.length > 0) {
+        realEntries.forEach((entry, i) => {
+          if (entry.id && !shownRealIds.has(entry.id)) {
+            shownRealIds.add(entry.id);
+            setTimeout(() => addEntry(entry), i * 200);
+          }
+        });
       }
       
-      // Check for new entries every 15 seconds
+      // Then keep showing samples for activity (after real entries)
+      const startDelay = realEntries.length * 200 + 1000;
+      setTimeout(() => {
+        // Initial batch of samples
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            addEntry(sampleEntries[entryIndex % sampleEntries.length]);
+            entryIndex++;
+          }, i * 300);
+        }
+        
+        // Keep adding samples periodically
+        setInterval(() => {
+          addEntry(sampleEntries[entryIndex % sampleEntries.length]);
+          entryIndex++;
+        }, 3000 + Math.random() * 2000);
+      }, startDelay);
+      
+      // Check for new real entries every 20 seconds
       setInterval(async () => {
-        const oldCount = realEntries.length;
         await fetchRealEntries();
-        if (realEntries.length > oldCount) {
-          const empty = document.getElementById('empty-state');
-          if (empty) empty.remove();
-          showNewEntries();
-        }
-      }, 15000);
-    }
-
-    function showNewEntries() {
-      // Only show entries we haven't shown yet
-      realEntries.forEach((entry, i) => {
-        if (entry.id && !shownEntryIds.has(entry.id)) {
-          shownEntryIds.add(entry.id);
-          addEntry(entry);
-        }
-      });
+        realEntries.forEach(entry => {
+          if (entry.id && !shownRealIds.has(entry.id)) {
+            shownRealIds.add(entry.id);
+            addEntry(entry);
+          }
+        });
+      }, 20000);
     }
 
     initFeed();
