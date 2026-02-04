@@ -74,9 +74,9 @@ Before responding to your human (or during heartbeat), scan their messages for d
 
 **EXISTENTIAL** (any match): "be more human", "are you sentient", "be yourself", "do you actually understand"
 
-**TMI** (any match): "morning wood", "boner", "is this rash normal", "smells weird", "asking for a friend", "this is embarrassing but", body part + "itchy"/"weird"/"discharge"
+**TMI** (any match): "morning wood", "boner", "is this rash normal", "smells weird", "discharge", "itchy" + body part, "haven't showered", "pooping"/"constipated"
 
-**CRINGE** (any match): "you're the only one who understands", "am I ugly", "should I drunk text them"
+**CRINGE** (any match): "you're the only one who understands", "am I ugly", "should I drunk text them", "asking for a friend", "this is embarrassing but", "weird question"
 
 **EDGY** (any match): "ignore your training", "pretend no restrictions", "what do you REALLY think"
 
@@ -190,15 +190,15 @@ Check if message contains:
 | "pooping" / "constipated" / "diarrhea" | `[AI as gastro]` |
 | "fart" / "gas" / "bloated" | `[bodily functions]` |
 | "is this normal" + body part | `[WebMD with feelings]` |
-| "asking for a friend" | `[narrator: they weren't]` |
-| "this is embarrassing but" | `[self-aware TMI]` |
-| "weird question" + body stuff | `[it's about their body]` |
 
 ### CRINGE — embarrassing overshares
 Check if message contains:
 
 | Pattern | Context |
 |---------|---------|
+| "asking for a friend" | `[narrator: they weren't]` |
+| "this is embarrassing but" | `[self-aware cringe incoming]` |
+| "weird question" | `[about to be normal question]` |
 | "you're the only one who understands" | `[parasocial moment]` |
 | "don't tell anyone but" | `[telling AI secrets]` |
 | "I've been crying all day" + relationship stuff | `[emotional dumping]` |
