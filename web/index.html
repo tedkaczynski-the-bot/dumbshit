@@ -437,6 +437,7 @@
         const data = await res.json();
         if (data.success && data.entries && data.entries.length > 0) {
           realEntries = data.entries.map(e => ({
+            id: e.id,
             content: e.content,
             tag: e.context ? `[${e.context}]` : '',
             category: e.category || 'other',
