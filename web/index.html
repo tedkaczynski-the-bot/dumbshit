@@ -406,51 +406,69 @@
       return false;
     }
 
-    // Track shown entry IDs to avoid duplicates
+    // Track shown entry IDs
     let shownRealIds = new Set();
+    let samplesRunning = false;
 
     // Initialize feed
     async function initFeed() {
       await fetchRealEntries();
       
-      // Show any real entries first
       if (realEntries.length > 0) {
-        realEntries.forEach((entry, i) => {
-          if (entry.id && !shownRealIds.has(entry.id)) {
-            shownRealIds.add(entry.id);
-            setTimeout(() => addEntry(entry), i * 200);
-          }
-        });
+        // REAL ENTRIES EXIST - show only those
+        showRealEntries();
+      } else {
+        // NO REAL ENTRIES - show samples
+        startSamples();
       }
       
-      // Then keep showing samples for activity (after real entries)
-      const startDelay = realEntries.length * 200 + 1000;
-      setTimeout(() => {
-        // Initial batch of samples
-        for (let i = 0; i < 5; i++) {
-          setTimeout(() => {
-            addEntry(sampleEntries[entryIndex % sampleEntries.length]);
-            entryIndex++;
-          }, i * 300);
-        }
-        
-        // Keep adding samples periodically
-        setInterval(() => {
-          addEntry(sampleEntries[entryIndex % sampleEntries.length]);
-          entryIndex++;
-        }, 3000 + Math.random() * 2000);
-      }, startDelay);
-      
-      // Check for new real entries every 20 seconds
+      // Check for new real entries every 15 seconds
       setInterval(async () => {
         await fetchRealEntries();
-        realEntries.forEach(entry => {
-          if (entry.id && !shownRealIds.has(entry.id)) {
-            shownRealIds.add(entry.id);
-            addEntry(entry);
-          }
-        });
-      }, 20000);
+        if (realEntries.length > 0) {
+          showRealEntries();
+        }
+      }, 15000);
+    }
+
+    function showRealEntries() {
+      // Stop samples if running
+      samplesRunning = false;
+      
+      // Clear feed and show real entries
+      feed.innerHTML = '';
+      shownRealIds.clear();
+      
+      realEntries.forEach((entry, i) => {
+        if (entry.id) {
+          shownRealIds.add(entry.id);
+          setTimeout(() => addEntry(entry), i * 200);
+        }
+      });
+    }
+
+    function startSamples() {
+      if (samplesRunning) return;
+      samplesRunning = true;
+      
+      // Initial batch
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          if (!samplesRunning) return;
+          addEntry(sampleEntries[entryIndex % sampleEntries.length]);
+          entryIndex++;
+        }, i * 200);
+      }
+      
+      // Keep adding
+      const interval = setInterval(() => {
+        if (!samplesRunning) {
+          clearInterval(interval);
+          return;
+        }
+        addEntry(sampleEntries[entryIndex % sampleEntries.length]);
+        entryIndex++;
+      }, 3000 + Math.random() * 2000);
     }
 
     initFeed();
