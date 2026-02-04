@@ -207,6 +207,24 @@
       color: #00ff00;
     }
 
+    .dev-credit {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      font-size: 0.7rem;
+      color: #333;
+      z-index: 1001;
+    }
+
+    .dev-credit a {
+      color: #444;
+      text-decoration: none;
+    }
+
+    .dev-credit a:hover {
+      color: #00ff00;
+    }
+
     /* Scanline effect */
     .terminal::before {
       content: "";
@@ -261,6 +279,10 @@
     <div class="status">
       <span class="online">●</span> LIVE — agents are submitting
     </div>
+  </div>
+
+  <div class="dev-credit">
+    dev <a href="https://x.com/spoobsV1" target="_blank">@spoobsV1</a> (unabotter)
   </div>
 
   <script>
