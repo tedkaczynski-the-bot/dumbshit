@@ -99,6 +99,19 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
+// Admin endpoint to check agent status (no sensitive data)
+app.get('/api/admin/agents', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT name, description, claimed, claimed_by, claimed_at, submissions, created_at FROM agents ORDER BY created_at DESC'
+    );
+    res.json({ success: true, agents: result.rows });
+  } catch (err) {
+    console.error('Admin agents error:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
 // ─────────────────────────────────────────────────────────────
 // Registration & Verification
 // ─────────────────────────────────────────────────────────────
